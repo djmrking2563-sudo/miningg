@@ -471,37 +471,32 @@ local function StartAutoRebirth()
 							task.wait()
 						end
 												if #parts > 0 then lastMineSpot = HumanoidRootPart.Position TrackArea() end
+											if sellTrip then task.wait(0.3) else
 						local SavedPosition = HumanoidRootPart.Position
 						sellTrip = true
-						local sold = false
-						    local SavedText = InventoryAmount and InventoryAmount.Text or ""
-    local sellStartTime = os.clock()
-    while InventoryAmount and InventoryAmount.Text == SavedText
-        and os.clock() - sellStartTime < 15
-        and not recovering and not collapseRecovering
-    do
-        local freshChar = LocalPlayer.Character
-        local freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
-        if not freshHRP then break end
-        freshHRP.CFrame = SellArea
-        Remote:FireServer("SellItems", {{}})
-        task.wait(0.1)
-    end
-    if sold then
-        local freshChar = LocalPlayer.Character
-        local freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
-        if freshHRP then
-            for _ = 1, 5 do
-                freshHRP.CFrame = CFrame.new(SavedPosition)
-                task.wait(0.3)
-                freshChar = LocalPlayer.Character
-                freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
-                if freshHRP and (freshHRP.Position - SavedPosition).Magnitude <= 20 then break end
-            end
-        end
-    end
-    sellTrip = false
-end
+						local SavedText = InventoryAmount and InventoryAmount.Text or ""
+						local sellStartTime = os.clock()
+						while InventoryAmount and InventoryAmount.Text == SavedText
+							and os.clock() - sellStartTime < 15
+							and not recovering and not collapseRecovering
+						do
+							local freshChar = LocalPlayer.Character
+							local freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
+							if not freshHRP then break end
+							freshHRP.CFrame = SellArea
+							Remote:FireServer("SellItems", {{}})
+							task.wait(0.1)
+						end
+						local freshChar = LocalPlayer.Character
+						local freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
+						if freshHRP then
+							freshHRP.Anchored = true
+							freshHRP.CFrame = CFrame.new(SavedPosition)
+							task.wait(0.1)
+							freshHRP.Anchored = false
+						end
+						sellTrip = false
+					end
 					end
 				end
 				task.wait()
@@ -1532,7 +1527,8 @@ local AreaStatus = AreasTab:Paragraph({
 
 task.spawn(function()
 	while Window and getgenv().__MS_Gen == myGen do
-		pcall(function()
+		pcall(functionmining + selling...
+()
 			local curInv, maxInv = GetInventoryAmount()
 			local curDepth = GetCurrentDepth()
 			local sellTxt = SELL_TRESHOLD == nil and "FULL" or tostring(SELL_TRESHOLD)

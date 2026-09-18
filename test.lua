@@ -473,8 +473,8 @@ local function StartAutoRebirth()
 							Remote:FireServer("MineBlock", {{block.Parent}})
 							task.wait()
 						end
-						if #parts > 0 then lastMineSpot = HumanoidRootPart.Position TrackArea() end
-						if false then task.wait(0.3) else
+												if #parts > 0 then lastMineSpot = HumanoidRootPart.Position TrackArea() end
+						if sellTrip then task.wait(0.3) else
     local SavedPosition = HumanoidRootPart.Position
     local sold = false
     sellTrip = true
@@ -504,22 +504,6 @@ local function StartAutoRebirth()
     end
     sellTrip = false
 end
-
-						if sold then
-							local freshChar = LocalPlayer.Character
-							local freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
-							if freshHRP then
-								for _ = 1, 3 do
-									freshHRP.CFrame = CFrame.new(SavedPosition)
-									task.wait(0.3)
-									freshChar = LocalPlayer.Character
-									freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
-									if freshHRP and (freshHRP.Position - SavedPosition).Magnitude <= 15 then break end
-								end
-							end
-						end
-						sellTrip = false
-						end
 					end
 				end
 				task.wait()

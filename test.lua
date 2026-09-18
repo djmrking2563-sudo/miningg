@@ -334,27 +334,24 @@ local function StartAutoSell()
 				local curInv, curMax = GetInventoryAmount()
 				if not curMax or curMax <= 0 then task.wait(0.5) return end
 				local triggerAt = math.floor(curMax * 0.95)
-				if curInv >= triggerAt then
-					local SavedPosition = HumanoidRootPart.Position
-					local sold = false
-					sellTrip = true
-					print("[MS] Selling: inv " .. tostring(curInv) .. "/" .. tostring(curMax) .. " trigger at " .. tostring(triggerAt))
-					local sellStartTime = os.clock()
-					while os.clock() - sellStartTime < 8 and not recovering and not collapseRecovering do
-						local freshChar = LocalPlayer.Character
-						local freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
-						if not freshHRP then break end
-						freshHRP.CFrame = SellArea
-						task.wait(0.3)
-						Remote:FireServer("SellItems", {{}})
-						task.wait(0.4)
-						local nowInv = GetInventoryAmount()
-						if nowInv < triggerAt then
-							sold = true
-							break
+									if curInv >= triggerAt then
+						local SavedPosition = HumanoidRootPart.Position
+						sellTrip = true
+											local SavedText = InventoryAmount and InventoryAmount.Text or ""
+						local sellStartTime = os.clock()
+						while InventoryAmount and InventoryAmount.Text == SavedText
+							and os.clock() - sellStartTime < 15
+							and not recovering and not collapseRecovering
+							and Toggles["AutoSell"]
+						do
+							local freshChar = LocalPlayer.Character
+							local freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
+							if not freshHRP then break end
+							freshHRP.CFrame = SellArea
+							Remote:FireServer("SellItems", {{}})
+							task.wait(0.1)
 						end
-					end
-					if sold then
+					if true then
 						local freshChar = LocalPlayer.Character
 						local freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
 						if freshHRP then
@@ -474,20 +471,21 @@ local function StartAutoRebirth()
 							task.wait()
 						end
 												if #parts > 0 then lastMineSpot = HumanoidRootPart.Position TrackArea() end
-						if sellTrip then task.wait(0.3) else
-    local SavedPosition = HumanoidRootPart.Position
-    local sold = false
-    sellTrip = true
-    local _, packMaxNow = GetInventoryAmount()
-    local triggerAt = packMaxNow and math.floor(packMaxNow * 0.95) or 200
+						local SavedPosition = HumanoidRootPart.Position
+						sellTrip = true
+						local sold = false
+						    local SavedText = InventoryAmount and InventoryAmount.Text or ""
     local sellStartTime = os.clock()
-    while os.clock() - sellStartTime < 8 and not recovering and not collapseRecovering do
-        local nowInv = GetInventoryAmount()
-        if nowInv < triggerAt then sold = true break end
-        HumanoidRootPart.CFrame = SellArea
-        task.wait(0.3)
+    while InventoryAmount and InventoryAmount.Text == SavedText
+        and os.clock() - sellStartTime < 15
+        and not recovering and not collapseRecovering
+    do
+        local freshChar = LocalPlayer.Character
+        local freshHRP = freshChar and freshChar:FindFirstChild("HumanoidRootPart")
+        if not freshHRP then break end
+        freshHRP.CFrame = SellArea
         Remote:FireServer("SellItems", {{}})
-        task.wait(0.4)
+        task.wait(0.1)
     end
     if sold then
         local freshChar = LocalPlayer.Character
